@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from todos.views import TodoCreateListAPIView
+from todos.views import TodoListAPIView, TodoCreateAPIView, TodoUpdateAPIView
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TodoCreateListAPIView.as_view(), name='todo-home' ),
+    path('', TodoListAPIView.as_view(), name='todo-home' ),
+    path('create/', TodoCreateAPIView.as_view(), name='todo-create'),
+    path('update/<int:id>', TodoUpdateAPIView.as_view(), name= 'todo-update')
 ]
