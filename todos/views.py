@@ -18,18 +18,34 @@ def todo_list_view(request):
 @permission_classes([IsAuthenticated])
 def TodoCreate(request):
     if request.method == 'POST':
-        print(request.data)
-        request.data['author'] = request.user
-        serialized_Todo = TodoSerializer(data=request.data)
-        print("finish")
-        print(serialized_Todo)
+        data = {
+            'title': request.data['title'],
+            'description': request.data['description'],
+            'author': request.user.id # Use the user instance to set the author field
+        }
+        serialized_Todo = TodoSerializer(data=data)
         if serialized_Todo.is_valid():
             serialized_Todo.save()
             return Response (serialized_Todo.data, status=status.HTTP_201_CREATED)
         return Response(serialized_Todo.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class TodoUpdateAPIView(UpdateAPIView):
-    queryset = Todo.objects.all()
-    serializer_class = TodoSerializer
-    lookup_field = 'id'
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def edit_todo(request, todo_id):
+    try:
+        todo = Todo.objects.get(id=todo_id)
+    except Todo.DoesNotExist:
+        return Response({'error': 'Todo not found'}, status=404)
+        
+    data = {
+        'title': request.data['title'],
+        'description': request.data['description'],
+        'is_finished' : request.data['is_finished'],
+        'author': request.user.id # Use the user instance to set the author field
+    } 
+    serializer = TodoSerializer(todo, data=data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=400)

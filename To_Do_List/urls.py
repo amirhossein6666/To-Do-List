@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from todos.views import todo_list_view, TodoCreate ,TodoUpdateAPIView
+from todos.views import todo_list_view, TodoCreate ,edit_todo
 from users.views import register_user, user_login
 from . import swagger
 
@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', todo_list_view, name='todo-home' ),
     path('create/', TodoCreate, name='todo-create'),
-    path('update/<int:id>', TodoUpdateAPIView.as_view(), name= 'todo-update'),
+    path('update/<int:todo_id>', edit_todo , name= 'todo-update'),
     path('register/', register_user, name='register'),
     path('login/', user_login, name='login'),
     path('doc/', include(swagger)),
