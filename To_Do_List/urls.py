@@ -15,11 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from todos.views import TodoListAPIView, TodoCreateAPIView, TodoUpdateAPIView
+from django.urls import path, include
+from todos.views import todo_list_view, TodoCreate ,TodoUpdateAPIView
+from users.views import register_user, user_login
+from . import swagger
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TodoListAPIView.as_view(), name='todo-home' ),
-    path('create/', TodoCreateAPIView.as_view(), name='todo-create'),
-    path('update/<int:id>', TodoUpdateAPIView.as_view(), name= 'todo-update')
+    path('', todo_list_view, name='todo-home' ),
+    path('create/', TodoCreate, name='todo-create'),
+    path('update/<int:id>', TodoUpdateAPIView.as_view(), name= 'todo-update'),
+    path('register/', register_user, name='register'),
+    path('login/', user_login, name='login'),
+    path('doc/', include(swagger)),
 ]
